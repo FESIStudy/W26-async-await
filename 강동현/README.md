@@ -10,7 +10,7 @@
 # promise
 - 비동기 작업의 완료 또는 실패를 나타내는 객체
 
-## 기본 사용법
+### 기본 사용법
 ```js
 const promise = new Promise((resolve, reject) => {
   // 비동기 작업
@@ -21,7 +21,7 @@ const promise = new Promise((resolve, reject) => {
   }
 });
 ```
-## promise의 상태
+### promise의 상태
 promise는 3가지 상태를 가짐
 | 상태          | 설명                  |
 | ----------- | ------------------- |
@@ -45,8 +45,11 @@ getData().then((result) => {
 ```
 
 **.then(): 성공 시 호출, fulfilled 상태**
+
 **.catch(): 실패 시 호출, rejected 상태**
+
 **.finally(): 무조건 호출 (성공/실패와 관계없이)**
+
 ```js
 promise
   .then(result => console.log(result))
@@ -67,7 +70,7 @@ getData()
 ```
 - 각 `.then()`은 새로운 Promise를 반환합니다. 그래서 연속적으로 작업을 이어갈 수 있습니다.
 
-## 에러 원칙
+### 에러 원칙
 Promise 체이닝 중 어디서든 `reject`나 `throw`가 발생하면 `.catch()`로 전달됩니다.
 
 ```js
@@ -98,7 +101,7 @@ Promise.race([slowPromise, fastPromise]).then(result => console.log(result));
 ```
 
 ### `Promise.allSettled([])`
-성공/실패와 관계없이 모든 결과를 배열로 반환
+- 성공/실패와 관계없이 모든 결과를 배열로 반환
 ```js
 Promise.allSettled([p1, p2]).then(results => {
   results.forEach(r => console.log(r.status, r.value || r.reason));
@@ -110,7 +113,7 @@ Promise.allSettled([p1, p2]).then(results => {
 - 모두 실패해야만 reject
 
 
-## promise 지옥
+### promise 지옥
 지옥예제
 ```js
 fetch("https://api.github.com/users")
@@ -135,44 +138,22 @@ fetch("https://api.github.com/users")
   });
 ```
 - `then()` 메서드가 과도하게 체인되어 코드 가독성이 떨어지고, 중간 에러 처리가 어려움
-- promise 지옥 해결법으로 async & await으로 가독성
+- promise 지옥 해결법으로 async & await 사용
 
-# async & await 사용법
+## async & await 사용법
 - `async`와 `await`는 자바스크립트의 최신 비동기 처리 문법
 - 코드를 동기적으로 작성한것 처럼 보이게 함
 
-```js
-async function fetchGitHubUsers() {
-  try {
-    const response = await fetch("https://api.github.com/users");
-
-    if (response.ok) {
-      const users = await response.json();
-      const logins = users.map((user) => user.login);
-      const result = logins.join(", ");
-      console.log(result);
-    } else {
-      throw new Error("Network Error");
-    }
-
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-fetchGitHubUsers();
-```
-
-## async 함수 선언
+### async 함수 선언
 - 함수 앞에 async 키워드를 붙인다.
 - 리턴값은 promise 객체
 - return 값을 명시해주지 않으면 자동으로 `undefined` 반환
 
-## await 키워드
+### await 키워드
 - `await` 키워드 `async`함수 내부에서만 사용
 - `await` 프로미스가 처리될 때까지 함수 실행을 일시 중지
 
-## 기본 사용법
+### 기본 사용법
 - 비동기 함수 정의 및 호출
 ```js
 function fetchUser(url) {
@@ -189,9 +170,7 @@ async function logName() {             // (1) async 함수 선언
 logName();                             // (2) async 함수 호출
 ```
 
-
-
-## 고급 활용
+### 고급 활용
 ```js
 //병렬 실행 (parallel)
 const [res1, res2] = await Promise.all([fetch1(), fetch2()]);
@@ -224,7 +203,7 @@ const login = (isValid) => new Promise((resolve, reject) => {
   isValid ? resolve("로그인 성공") : reject("로그인 실패");
 });
 ```
-## 실제 사용 예 (API 요청)
+### 실제 사용 예 (API 요청)
 ```js
 const fetchUser = async (id) => {
   try {
@@ -268,8 +247,7 @@ const fetchUser = async (id) => {
 
 이벤트 루프는 일반적으로 **microtask queue를 먼저 처리한 후, task queue**를 처리합니다. 따라서 **Promise.then의 결과가 setTimeout**보다 먼저 처리됩니다. 같은 큐 안에서도 우선순위가 다른 작업들이 있을 수 있습니다.
 
-## 이벤트 루프 동작 과정
-동작 과정
+**동작 과정**
 1. 동기 작업 실행: 콜 스택에 쌓인 동기 작업을 순차적으로 실행합니다.
 1. 비동기 작업 처리: 비동기 함수 호출 시, 해당 작업은 웹 API에서 처리되고, 완료된 콜백 함수는 콜백 큐에 적재됩니다.
 1. 이벤트 루프 작동: 이벤트 루프는 콜 스택이 비어 있는지 확인한 후, 비어 있다면 콜백 큐에서 대기 중인 콜백 함수를 콜 스택으로 옮겨 실행합니다.
@@ -290,7 +268,7 @@ bar().then(x => {
 ```
 
 ## MicroTask Queue의 무한 루프
-taskqueue로 구현된 루프
+- taskqueue로 구현된 루프
 ```js
 document.getElementById("btn2").addEventListener("click", () => {
   // setTimeout 함수는 Task Queue에 콜백을 추가
@@ -307,7 +285,7 @@ document.getElementById("btn2").addEventListener("click", () => {
 ```
 - 실행하면 문제없이 루프가 시작된다
 
-microtask queue로 구현된 루프
+- microtask queue로 구현된 루프
 ```js
 document.getElementById("btn2").addEventListener("click", () => {
   // Promise 객체는 MicroTask Queue에 콜백을 추가
